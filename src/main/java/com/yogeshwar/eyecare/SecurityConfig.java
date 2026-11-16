@@ -24,11 +24,13 @@ import com.yogeshwar.eyecare.security.JwtAuthenticationFilter;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
@@ -41,6 +43,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration) throws Exception {
+
         return configuration.getAuthenticationManager();
     }
 
@@ -50,11 +53,20 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                Arrays.asList("http://localhost:5173")
+                Arrays.asList(
+                        "http://localhost:5173",
+                        "https://sunetra-eye-care-frontend.vercel.app"
+                )
         );
 
         configuration.setAllowedMethods(
-                Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                Arrays.asList(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "OPTIONS"
+                )
         );
 
         configuration.setAllowedHeaders(
@@ -92,18 +104,25 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 
                 .requestMatchers(HttpMethod.GET, "/api/services").permitAll()
+
                 .requestMatchers(HttpMethod.GET, "/api/gallery").permitAll()
 
                 .requestMatchers(HttpMethod.POST, "/api/appointments").permitAll()
+
                 .requestMatchers(HttpMethod.POST, "/api/contact").permitAll()
+
                 .requestMatchers(HttpMethod.POST, "/api/admin/login").permitAll()
 
                 .requestMatchers(HttpMethod.GET, "/").permitAll()
 
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
                 .requestMatchers("/api/appointments/**").hasRole("ADMIN")
+
                 .requestMatchers("/api/contact/**").hasRole("ADMIN")
+
                 .requestMatchers("/api/services/**").hasRole("ADMIN")
+
                 .requestMatchers("/api/gallery/**").hasRole("ADMIN")
 
                 .anyRequest().authenticated()
